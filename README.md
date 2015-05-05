@@ -21,3 +21,8 @@ Memory intensive and FLOP intensive tests
 ### run
 
     sbatch -N 1 -t 5 ./getTimeCCIDrp.sh
+
+### results - power optimized bios settings
+
+    mem workers 2 average 3.60136
+    flop workers 2 average 3.91518
