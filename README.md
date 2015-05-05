@@ -14,6 +14,6 @@ Memory intensive and FLOP intensive tests
     ./build.sh
 
 ## run
-From an interactive idev session:
+From an interactive session:
 
     ./getTime.sh
