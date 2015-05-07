@@ -3,10 +3,10 @@ run() {
   srun --mpi=none -n $2 "$1" &>> work${2}.log
 }
 mem() { 
-  run "./mpiWorkMem -r 4" $1
+  run "./mpiWork -k kernels/mem1.so -r 4" $1
 }
 flop() { 
-  run "./mpiWorkFlop -r 400" $1
+  run "./mpiWork -k kernels/flop1.so -r 400" $1
 }
 getAvg() {
   awk '/realTime/ {sum+=$2; cnt+=1;} END {print "average " sum/cnt}' work${1}.log 

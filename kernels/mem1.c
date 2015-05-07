@@ -1,7 +1,6 @@
 #include "kernel.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <mpi.h>
 #include <pthread.h>
 #include <errno.h>
 
@@ -36,6 +35,6 @@ void memoryAssault() {
 	free(walker);
 }
 
-void kernelMem(void* ptr) {
+void kernel_entry(void* ptr) {
 	memoryAssault();
 }

@@ -37,6 +37,6 @@ void doLotsOfWork() {
 	free(c);
 }
 
-void kernelFlop(void* ptr) {
+void kernel_entry(void* ptr) {
 	doLotsOfWork();
 }

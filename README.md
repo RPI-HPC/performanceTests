@@ -1,22 +1,23 @@
 ## performanceTests
 Memory intensive and FLOP intensive tests
 
-## contents
-- build.sh - build script
+## Select contents
 - env*.sh - environment setup scripts
 - getTime*.sh - run script
-- kernelFlop.c - flop intensive kernel
-- kernelMem.c - memory intensive kernel
 - kernel.h - kernel header
 - mpiWork.c - mpi driver
-- README.md - this file
+- kernels/ - test kernels (see below)
+
+## Test kernels
+- flop1 - flop intensive kernel
+- mem1 - memory intensive kernel
 
 ## CCI Drp
 
 ### build
 
     source envCCIDrp.sh
-    ./build.sh
+    make KERNELS="flop1 mem1"
 
 ### run
 
