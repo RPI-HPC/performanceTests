@@ -17,11 +17,11 @@ int main(int argc, char** argv) {
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 	MPI_Comm_size(MPI_COMM_WORLD, &worldSz);
 
-	thdata* data = calloc(1,sizeof(thdata));
-	data->rank = rank;
-	data->commsz = worldSz;
-	data->id = rank;
-	data->peers = 1;
+	thdata data;
+	data.rank = rank;
+	data.commsz = worldSz;
+	data.id = rank;
+	data.peers = 1;
 
 	while ((c = getopt (argc, argv, "r:")) != -1)
 		switch (c) {
@@ -33,9 +33,9 @@ int main(int argc, char** argv) {
 
 	for (r=0; r<repeat; r++) {
 #ifdef MEM
-		kernelMem((void*) data);
+		kernelMem(&data);
 #elif FLOP
-		kernelFlop((void*) data);
+		kernelFlop(&data);
 #else
 	#error "Unknown configuration - compile with either -DMEM or -DFLOP"
 #endif
@@ -44,7 +44,7 @@ int main(int argc, char** argv) {
 	MPI_Barrier(MPI_COMM_WORLD);
 	if( !rank )
 		fprintf(stderr, "realTime %f\n", MPI_Wtime()-t0);
-	free(data);
+
 	MPI_Finalize();
 	return 0;
 }
