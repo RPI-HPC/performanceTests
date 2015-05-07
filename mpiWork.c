@@ -8,8 +8,15 @@
 #include <dlfcn.h>
 #include <limits.h>
 #include <time.h>
+#include <pthread.h>
 
 #include "kernel.h"
+
+struct thread_args {
+	thdata *data;
+	void (*entry)(thdata *);
+	unsigned long repeat;
+};
 
 static unsigned int strtoui_max(const char *str, char **endptr, int base)
 {
@@ -19,6 +26,17 @@ static unsigned int strtoui_max(const char *str, char **endptr, int base)
 		return UINT_MAX;
 	else
 		return (unsigned int) tmp;
+}
+
+static void *thread(void *arg)
+{
+	int r;
+	struct thread_args *args = (struct thread_args *) arg;
+
+	for (r=0; r<args->repeat; r++)
+		(*args->entry)(args->data);
+
+	return NULL;
 }
 
 int main(int argc, char** argv) {
@@ -33,6 +51,10 @@ int main(int argc, char** argv) {
 	void (*entry)(thdata *);
 	const char *error;
 	unsigned int seed = time(NULL);
+	pthread_t *threads;
+	unsigned int t;
+	unsigned int thread_count = 0;
+	struct thread_args args;
 
 	MPI_Init(&argc, &argv);
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -44,7 +66,7 @@ int main(int argc, char** argv) {
 	data.id = rank;
 	data.peers = 1;
 
-	while ((c = getopt (argc, argv, "k:r:s:")) != -1)
+	while ((c = getopt (argc, argv, "k:r:s:t:")) != -1)
 		switch (c) {
 			case 'k':
 				kernel = strdup(optarg);
@@ -55,6 +77,8 @@ int main(int argc, char** argv) {
 			case 's':
 				seed = strtoui_max(optarg, NULL, 10);
 				break;
+			case 't':
+				thread_count = strtoui_max(optarg, NULL, 10);
 		}
 
 	if (kernel == NULL) {
@@ -82,8 +106,26 @@ int main(int argc, char** argv) {
 
 	double t0 = MPI_Wtime();
 
-	for (r=0; r<repeat; r++) {
-		(*entry)(&data);
+	if (thread_count == 0) {
+		for (r=0; r<repeat; r++)
+			(*entry)(&data);
+	} else {
+		printf("Starting %u threads\n", thread_count);
+		threads = calloc(thread_count, sizeof(pthread_t));
+
+		args.repeat = repeat;
+		args.data = &data;
+		args.entry = entry;
+
+		for (t = 0; t < thread_count; t++) {
+			pthread_create(&threads[t], NULL, thread, &args);
+		}
+
+		for (t = 0; t < thread_count; t++) {
+			pthread_join(threads[t], NULL);
+		}
+
+		free(threads);
 	}
 
 	MPI_Barrier(MPI_COMM_WORLD);

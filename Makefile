@@ -6,7 +6,7 @@ CFLAGS:=-Wall -g -O3 -fno-omit-frame-pointer
 all: mpiWork kernels
 
 mpiWork: mpiWork.c
-	$(MPICC) $(CFLAGS) $^ -ldl -o $@
+	$(MPICC) $(CFLAGS) -pthread $^ -ldl -o $@
 
 kernels/%.so: kernels/%.c
 	$(CC) -shared -fpic $(CFLAGS) -I. $^ -o $@
