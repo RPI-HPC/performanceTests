@@ -5,6 +5,7 @@
 #include <math.h>
 
 void doLotsOfWork() {
+	unsigned int seed;
 	int dim = 1000;
 	int i,j;
 	double** A;
@@ -19,9 +20,9 @@ void doLotsOfWork() {
 
 	for(i=0;i<dim;i++)
 		for(j=0;j<dim;j++)
-			A[i][j] = rand();
+			A[i][j] = rand_r(&seed);
 	for(i=0;i<dim;i++)
-		b[i] = rand();
+		b[i] = rand_r(&seed);
 
 	for(i=0;i<dim;i++)
 		for(j=0;j<dim;j++)
