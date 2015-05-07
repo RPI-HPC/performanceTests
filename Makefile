@@ -1,8 +1,7 @@
-flags="-Wall -g -O3 -fno-omit-frame-pointer "
-src="kernelMem.c kernelFlop.c"
-
 CC:=cc
 MPICC:=mpicc
+
+CFLAGS:=-Wall -g -O3 -fno-omit-frame-pointer
 
 all: mpiWork kernels
 
