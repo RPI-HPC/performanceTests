@@ -33,11 +33,12 @@ int main(int argc, char** argv) {
 
 	while ((c = getopt (argc, argv, "k:r:")) != -1)
 		switch (c) {
+			case 'k':
+				kernel = strdup(optarg);
+				break;
 			case 'r':
 				repeat = strtoul(optarg, NULL, 10);
 				break;
-			case 'k':
-				kernel = strdup(optarg);
 		}
 
 	if (kernel == NULL) {
