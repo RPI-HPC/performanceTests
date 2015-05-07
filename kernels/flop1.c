@@ -11,11 +11,11 @@ void doLotsOfWork() {
 	double* b;
 	double* c;
 
-	A = (double**) calloc(dim, sizeof(double*));
+	A = calloc(dim, sizeof(double*));
 	for(i=0;i<dim;i++)
-		A[i] = (double*) calloc(dim, sizeof(double));
-	b = (double*) calloc(dim, sizeof(double));
-	c = (double*) calloc(dim, sizeof(double));
+		A[i] = calloc(dim, sizeof(double));
+	b = calloc(dim, sizeof(double));
+	c = calloc(dim, sizeof(double));
 
 	for(i=0;i<dim;i++)
 		for(j=0;j<dim;j++)
