@@ -16,7 +16,8 @@ int main(int argc, char** argv) {
 	MPI_Init(&argc, &argv);
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 	MPI_Comm_size(MPI_COMM_WORLD, &worldSz);
-	thdata* data = (thdata*) calloc(1,sizeof(thdata));
+
+	thdata* data = calloc(1,sizeof(thdata));
 	data->rank = rank;
 	data->commsz = worldSz;
 	data->id = rank;
