@@ -37,7 +37,5 @@ void memoryAssault() {
 }
 
 void kernelMem(void* ptr) {
-	int i;
-	for(i=0;i<4;i++)
-		memoryAssault();
+	memoryAssault();
 }

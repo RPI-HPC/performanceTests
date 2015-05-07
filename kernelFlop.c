@@ -38,7 +38,5 @@ void doLotsOfWork() {
 }
 
 void kernelFlop(void* ptr) {
-	int i;
-	for(i=0;i<400;i++)
-		doLotsOfWork();
+	doLotsOfWork();
 }

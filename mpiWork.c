@@ -8,6 +8,9 @@
 #include "kernel.h"
 
 int main(int argc, char** argv) {
+	int c;
+	unsigned long repeat = 1;
+	unsigned long r;
 	int rank;
 	int worldSz;
 	MPI_Init(&argc, &argv);
@@ -18,14 +21,25 @@ int main(int argc, char** argv) {
 	data->commsz = worldSz;
 	data->id = rank;
 	data->peers = 1;
+
+	while ((c = getopt (argc, argv, "r:")) != -1)
+		switch (c) {
+			case 'r':
+				repeat = strtoul(optarg, NULL, 10);
+		}
+
 	double t0 = MPI_Wtime();
+
+	for (r=0; r<repeat; r++) {
 #ifdef MEM
-	kernelMem((void*) data);
+		kernelMem((void*) data);
 #elif FLOP
-	kernelFlop((void*) data);
+		kernelFlop((void*) data);
 #else
 	#error "Unknown configuration - compile with either -DMEM or -DFLOP"
 #endif
+	}
+
 	MPI_Barrier(MPI_COMM_WORLD);
 	if( !rank )
 		fprintf(stderr, "realTime %f\n", MPI_Wtime()-t0);
