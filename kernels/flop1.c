@@ -17,8 +17,6 @@ void doLotsOfWork() {
 	b = (double*) calloc(dim, sizeof(double));
 	c = (double*) calloc(dim, sizeof(double));
 
-	srand(1);
-
 	for(i=0;i<dim;i++)
 		for(j=0;j<dim;j++)
 			A[i][j] = rand();

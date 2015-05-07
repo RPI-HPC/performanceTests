@@ -6,8 +6,20 @@
 #include <mpi.h>
 #include <string.h>
 #include <dlfcn.h>
+#include <limits.h>
+#include <time.h>
 
 #include "kernel.h"
+
+static unsigned int strtoui_max(const char *str, char **endptr, int base)
+{
+	unsigned long tmp = strtoul(optarg, endptr, base);
+
+	if (tmp > UINT_MAX)
+		return UINT_MAX;
+	else
+		return (unsigned int) tmp;
+}
 
 int main(int argc, char** argv) {
 	int rc = EXIT_FAILURE;
@@ -20,6 +32,7 @@ int main(int argc, char** argv) {
 	void *handle;
 	void (*entry)(thdata *);
 	const char *error;
+	unsigned int seed = time(NULL);
 
 	MPI_Init(&argc, &argv);
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -31,13 +44,16 @@ int main(int argc, char** argv) {
 	data.id = rank;
 	data.peers = 1;
 
-	while ((c = getopt (argc, argv, "k:r:")) != -1)
+	while ((c = getopt (argc, argv, "k:r:s:")) != -1)
 		switch (c) {
 			case 'k':
 				kernel = strdup(optarg);
 				break;
 			case 'r':
 				repeat = strtoul(optarg, NULL, 10);
+				break;
+			case 's':
+				seed = strtoui_max(optarg, NULL, 10);
 				break;
 		}
 
@@ -60,6 +76,9 @@ int main(int argc, char** argv) {
 		fprintf(stderr, "Unable to start kernel: %s\n", error);
 		goto failure;
 	}
+
+	printf("Seed: %d\n", seed);
+	srand(seed);
 
 	double t0 = MPI_Wtime();
 
