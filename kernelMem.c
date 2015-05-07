@@ -1,9 +1,9 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<mpi.h>
-#include<pthread.h>
-#include<errno.h>
 #include "kernel.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <mpi.h>
+#include <pthread.h>
+#include <errno.h>
 
 #define TOTAL 1024*1024*1024
 #define SMALL 4*1024
