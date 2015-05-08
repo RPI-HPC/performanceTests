@@ -18,10 +18,10 @@ void memoryAssault() {
 	node* walker;
 	node* swap;
 	int i = 0;
-	root = (node*) calloc(1, sizeof(node));
+	root = calloc(1, sizeof(node));
 	walker = root;
 	while (i++ < LARGE) {
-		walker->next = (node*) calloc(1, sizeof(node));
+		walker->next = calloc(1, sizeof(node));
 		walker->something[i%SMALL] = i;
 		walker = walker->next;
 	}
