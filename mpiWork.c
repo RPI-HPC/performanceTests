@@ -123,11 +123,11 @@ int main(int argc, char** argv) {
 		threads = calloc(thread_count, sizeof(pthread_t));
 
                 
-                args = (thargs*) calloc(thread_count,sizeof(thargs));
+                args = calloc(thread_count,sizeof(thargs));
 		for (t = 0; t < thread_count; t++) {
                         args[t].repeat = repeat;
                         args[t].entry = entry;
-                        args[t].data = (thdata*) calloc(1,sizeof(thdata));
+                        args[t].data = calloc(1,sizeof(thdata));
                         args[t].data->rank = rank;
                         args[t].data->commsz = worldSz;
                         args[t].data->id = (rank*thread_count)+t;

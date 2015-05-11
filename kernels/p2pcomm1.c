@@ -14,7 +14,7 @@ void doLotsOfWork() {
   int large = 1000*1000;
   int i,j;
   double* arr;
-  arr = (double*) calloc(large, sizeof(double));
+  arr = calloc(large, sizeof(double));
   for(i=0;i<large/4;i++)
     for(j=0;j<large;j++)
       arr[j] = sqrt(i+j*3.21)/123.3+j;
