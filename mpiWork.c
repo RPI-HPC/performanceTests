@@ -12,11 +12,11 @@
 
 #include "kernel.h"
 
-struct thread_args {
+typedef struct thread_args {
 	thdata *data;
 	void (*entry)(thdata *);
 	unsigned long repeat;
-};
+} thargs;
 
 static unsigned int strtoui_max(const char *str, char **endptr, int base)
 {
@@ -31,7 +31,7 @@ static unsigned int strtoui_max(const char *str, char **endptr, int base)
 static void *thread(void *arg)
 {
 	int r;
-	struct thread_args *args = (struct thread_args *) arg;
+	thargs *args = (thargs *) arg;
 
 	for (r=0; r<args->repeat; r++)
 		(*args->entry)(args->data);
@@ -44,6 +44,7 @@ int main(int argc, char** argv) {
 	int c;
 	unsigned long repeat = 1;
 	unsigned long r;
+	int provided;
 	int rank;
 	int worldSz;
 	char *kernel = NULL;
@@ -54,9 +55,15 @@ int main(int argc, char** argv) {
 	pthread_t *threads;
 	unsigned int t;
 	unsigned int thread_count = 0;
-	struct thread_args args;
+        thargs* args;
 
-	MPI_Init(&argc, &argv);
+        MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
+        if( provided != MPI_THREAD_MULTIPLE ) { 
+          fprintf(stderr, "Error: MPI MPI_THREAD_MULTIPLE not supported\n");
+          return 0;
+        }   
+
+
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 	MPI_Comm_size(MPI_COMM_WORLD, &worldSz);
 
@@ -101,7 +108,8 @@ int main(int argc, char** argv) {
 		goto failure;
 	}
 
-	printf("Seed: %d\n", seed);
+        if( !rank )
+	        printf("Seed: %d\n", seed);
 	srand(seed);
 
 	double t0 = MPI_Wtime();
@@ -110,21 +118,31 @@ int main(int argc, char** argv) {
 		for (r=0; r<repeat; r++)
 			(*entry)(&data);
 	} else {
-		printf("Starting %u threads\n", thread_count);
+                if( !rank )
+		        fprintf(stderr, "Starting %u threads\n", thread_count);
 		threads = calloc(thread_count, sizeof(pthread_t));
 
-		args.repeat = repeat;
-		args.data = &data;
-		args.entry = entry;
-
+                
+                args = (thargs*) calloc(thread_count,sizeof(thargs));
 		for (t = 0; t < thread_count; t++) {
-			pthread_create(&threads[t], NULL, thread, &args);
-		}
+                        args[t].repeat = repeat;
+                        args[t].entry = entry;
+                        args[t].data = (thdata*) calloc(1,sizeof(thdata));
+                        args[t].data->rank = rank;
+                        args[t].data->commsz = worldSz;
+                        args[t].data->id = (rank*thread_count)+t;
+                        args[t].data->peers = thread_count;
+			pthread_create(&threads[t], NULL, thread, &args[t]);
+                }
 
 		for (t = 0; t < thread_count; t++) {
 			pthread_join(threads[t], NULL);
 		}
 
+		for (t = 0; t < thread_count; t++) {
+                        free(args[t].data);
+                }
+                free(args);
 		free(threads);
 	}
 

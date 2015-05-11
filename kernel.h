@@ -8,4 +8,5 @@ typedef struct str_thdata {
 } thdata;
 void kernelMem(void*);
 void kernelFlop(void*);
+void kernelP2P(void*);
 #endif

@@ -9,7 +9,7 @@ mpiWork: mpiWork.c
 	$(MPICC) $(CFLAGS) -pthread $^ -ldl -o $@
 
 kernels/%.so: kernels/%.c
-	$(CC) -shared -fpic $(CFLAGS) -I. $^ -o $@
+	$(MPICC) -shared -fpic $(CFLAGS) -I. $^ -o $@
 
 kernels: $(foreach kernel,$(KERNELS),kernels/$(kernel).so)
 
