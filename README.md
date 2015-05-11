@@ -11,6 +11,7 @@ Memory intensive and FLOP intensive tests
 ## Test kernels
 - flop1 - flop intensive kernel
 - mem1 - memory intensive kernel
+- p2pcomm1 - peer to peer communication kernel
 
 ## CCI Drp
 
@@ -22,8 +23,3 @@ Memory intensive and FLOP intensive tests
 ### run
 
     sbatch -N 1 -t 5 ./getTimeCCIDrp.sh
-
-### results - power optimized bios settings
-
-    mem workers 2 average 3.60136
-    flop workers 2 average 3.91518
