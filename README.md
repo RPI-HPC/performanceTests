@@ -1,5 +1,5 @@
 ## performanceTests
-Memory intensive and FLOP intensive tests
+Memory, FLOP, and communication (p2p and collective) intensive tests
 
 ## Select contents
 - env*.sh - environment setup scripts
@@ -19,7 +19,7 @@ Memory intensive and FLOP intensive tests
 ### build
 
     source envCCIDrp.sh
-    make KERNELS="flop1 mem1"
+    make KERNELS="flop1 mem1 p2pcomm1 colcomm1"
 
 ### run
 
