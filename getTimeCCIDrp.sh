@@ -9,9 +9,7 @@ flop() {
   run "./mpiWork -k kernels/flop1.so -r 400" $1
 }
 p2p() {
-  export MV2_ENABLE_AFFINITY=0
   run "./mpiWork -k kernels/p2pcomm1.so -r 30 -t 2" $1
-  unset MV2_ENABLE_AFFINITY
 }
 col() {
   run "./mpiWork -k kernels/colcomm1.so -r 10" $1
@@ -25,6 +23,8 @@ fns[1]="mem"
 fns[2]="flop"
 fns[3]="p2p"
 fns[4]="col"
+
+export MV2_ENABLE_AFFINITY=0
 
 workers=2
 for i in "${!fns[@]}"; do
