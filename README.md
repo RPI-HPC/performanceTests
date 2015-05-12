@@ -12,6 +12,7 @@ Memory intensive and FLOP intensive tests
 - flop1 - flop intensive kernel
 - mem1 - memory intensive kernel
 - p2pcomm1 - peer to peer communication kernel
+- colcomm1 - collective communication kernel
 
 ## CCI Drp
 
